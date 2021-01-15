@@ -7,7 +7,7 @@ export default function AddVideo({ id, values }) {
   useEffect(() => {
     if (id == null) return;
     console.log(values.email + 'email not empty');
-    console.log(values.video);
+
     const UploadVideo = storage
       .ref()
       .child(`${values.email}/` + id)
@@ -18,19 +18,27 @@ export default function AddVideo({ id, values }) {
         const progress = Math.round(
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         );
-
-        setProgress(progress);
+        if (isNaN(NaN)) {
+          setProgress(100);
+        } else {
+          setProgress(progress);
+        }
       },
       (error) => {
         console.log(error);
       },
       () => {
         console.log('hello');
+
         storage
           .ref(`${values.email}/`)
           .child(id)
           .getDownloadURL()
           .then((url) => {
+            let vip = 'no';
+            if (values.vip == 'yes') {
+              vip = 'yes';
+            }
             let data = {
               email: values.email,
               id,
@@ -38,6 +46,7 @@ export default function AddVideo({ id, values }) {
               description: values.description,
               url,
               views: 0,
+              vip: values.vip,
             };
             console.log('hello1');
             setUrl(url);

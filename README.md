@@ -1,6 +1,7 @@
->TO DO
-* ADD special route for app admin.
-* ADD route for user
+> TO DO
+
+- ADD special route for app admin.
+- ADD route for user
 
 # Getting Started with Create React App
 

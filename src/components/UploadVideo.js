@@ -14,6 +14,7 @@ export default function UploadVideo(props) {
     name: '',
     video: null,
     description: '',
+    vip:"no"
   };
   const [values, setValue] = useState(initialValue);
   const UploadNow = (e) => {
@@ -26,10 +27,16 @@ export default function UploadVideo(props) {
     isshow(true);
   };
   function valueChange(e) {
-    if (e.target.name == 'video') {
+    if (e.target.name == 'video' || e.target.name == 'image') {
       const [name, value] = [e.target.name, e.target.files[0]];
       console.log(e.target.files[0]);
+      let premium = window.confirm('is this Video under your premium catagory');
       setValue({ ...values, [name]: value });
+      if (premium) {
+        setValue({ ...values, vip: 'yes' });
+        console.log('ssddd');
+      }
+
       console.log('ss');
     } else {
       const [name, value] = [e.target.name, e.target.value];
@@ -68,6 +75,7 @@ export default function UploadVideo(props) {
           multiple={false}
           onChange={valueChange}
         />
+
         <Button type='submit' className='form-control'>
           SUBMIT
         </Button>
