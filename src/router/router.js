@@ -4,6 +4,7 @@ import Context from '../context';
 import Login from '../components/Login';
 import Nav from '../components/nav';
 import AdminVideoPanel from '../components/AdminVideoPanel';
+import ShowMyVideos from '../components/Show My videos';
 
 export default function Routing() {
   const [login, isLogin] = useState(false);
@@ -48,6 +49,7 @@ export default function Routing() {
               component={() => <AdminVideoPanel logout={logout} />}
             />
           )}
+          {login && <Route exact path='/Myvideo' component={ShowMyVideos} />}
         </Switch>
       </Router>
     </Context.Provider>
