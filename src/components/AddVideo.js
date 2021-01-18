@@ -1,24 +1,30 @@
 import { useEffect, useState } from 'react';
 import firebase, { storage } from '../firebase';
 
-export default function AddVideo({ id, values }) {
+export default function AddVideo({ id, values, type, uploaded }) {
   const [progress, setProgress] = useState(0);
   const [url, setUrl] = useState('');
   useEffect(() => {
     if (id == null) return;
     console.log(values.email + 'email not empty');
+    let file = values.video;
+    if (type == 'music') {
+      file = values.music;
+      console.log(type);
+      console.log(id);
+    }
 
     const UploadVideo = storage
       .ref()
       .child(`${values.email}/` + id)
-      .put(values.video);
+      .put(file);
     UploadVideo.on(
       'state_changed',
       (snapshot) => {
         const progress = Math.round(
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         );
-        if (isNaN(NaN)) {
+        if (isNaN(progress)) {
           setProgress(100);
         } else {
           setProgress(progress);
@@ -49,8 +55,11 @@ export default function AddVideo({ id, values }) {
               vip: values.vip,
             };
             console.log('hello1');
-            setUrl(url);
-            firebase.firestore().collection('video').add(data);
+
+            console.log(url);
+            console.log(type);
+            firebase.firestore().collection(type).add(data);
+            uploaded();
             return;
           });
       }

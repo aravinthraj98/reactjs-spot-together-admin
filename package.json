@@ -11,6 +11,7 @@
     "firebase": "^8.2.2",
     "localStorage": "^1.0.4",
     "react": "^17.0.1",
+    "react-audio-player": "^0.14.0",
     "react-bootstrap": "^1.4.3",
     "react-dom": "^17.0.1",
     "react-native-gesture-handler": "^1.9.0",

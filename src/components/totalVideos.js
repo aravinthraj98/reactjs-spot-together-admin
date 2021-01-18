@@ -4,7 +4,8 @@ import Context from '../context';
 import firebase from '../firebase';
 
 export default function Views(props) {
-  const [view, setView] = useState(null);
+  const [view, setView] = useState(0);
+  const [music, setMusix] = useState(0);
   const [context, setContext] = useContext(Context);
   function settotal() {
     firebase
@@ -13,8 +14,15 @@ export default function Views(props) {
       .where('email', '==', context)
       .get()
       .then((data) => {
-        console.log(data.size);
         setView(data.size);
+      });
+    firebase
+      .firestore()
+      .collection('music')
+      .where('email', '==', context)
+      .get()
+      .then((data) => {
+        setMusix(data.size);
       });
   }
   useState(() => {
@@ -24,6 +32,12 @@ export default function Views(props) {
     firebase
       .firestore()
       .collection('video')
+      .onSnapshot((onSnapshot) => {
+        settotal();
+      });
+    firebase
+      .firestore()
+      .collection('music')
       .onSnapshot((onSnapshot) => {
         settotal();
       });
@@ -39,8 +53,7 @@ export default function Views(props) {
       }}
     >
       <p style={{ fontSize: '15%' }}>Total Videos Posted:{view}</p>
-      <p style={{ fontSize: '20%' }}>AVG VIEWS:</p>
-      <p style={{ fontSize: '20%' }}>TOP VIEWS:</p>
+      <p style={{ fontSize: '20%' }}>Total musics Posted:{music}</p>
     </div>
   );
 }

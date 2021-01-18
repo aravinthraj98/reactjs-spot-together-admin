@@ -1,22 +1,27 @@
-import React, { useState, useContext } from 'react';
-import { Button, Col, Container, Row } from 'react-bootstrap';
+import React, { useState, useContext, useEffect } from 'react';
+import { Button, Col, Container, ButtonGroup, Row } from 'react-bootstrap';
 import Context from '../context';
 import { colorOne, colorTwo } from './color';
+import ReactAudioPlayer from 'react-audio-player';
 
 import firebase from '../firebase';
 export default function ShowMyVideos() {
+  const db = firebase.firestore();
   const [context, setContext] = useContext(Context);
+  const [type, setType] = useState('video');
   const [videos, setVideo] = useState([]);
-  const db = firebase.firestore().collection('video');
-  useState(() => {
+
+  useEffect(() => {
     console.log('videopage');
 
     getVideos();
-  }, []);
+  }, [type]);
+
   function getVideos() {
     let arrayValue = [];
-    db.where('email', '==', context);
-    db.get().then((doc) => {
+    let find = db.collection(type).where('email', '==', context);
+
+    find.get().then((doc) => {
       doc.forEach((data) => {
         let newData = data.data();
         newData['docid'] = data.id;
@@ -30,7 +35,8 @@ export default function ShowMyVideos() {
   function handleDelete(id) {
     console.log(id);
     if (window.confirm('delete the video?')) {
-      db.doc(id)
+      db.collection(type)
+        .doc(id)
         .delete()
         .then(() => {
           console.log('deleted');
@@ -40,21 +46,46 @@ export default function ShowMyVideos() {
   }
   return (
     <>
+      {type}
       <Container fluid style={{ backgroundColor: colorOne, width: '100%' }}>
-        {videos.length}
-        <Row>
+        <ButtonGroup aria-label='Basic example' style={{ width: '100%' }}>
+          <Button
+            variant='primary'
+            onClick={() => setType('music')}
+            style={{ width: '48%', margin: '1%' }}
+          >
+            Music
+          </Button>
+
+          <Button
+            variant='info'
+            onClick={() => setType('video')}
+            style={{ width: '48%', margin: '1%' }}
+          >
+            Video
+          </Button>
+        </ButtonGroup>
+        <Row style={{ height: '30%' }}>
           {videos.map((data) => (
             <Col
               md={4}
               style={{ color: 'white', marginTop: 10, marginBottom: 10 }}
             >
-              <video width='100%' height='80%' controls>
-                <source
-                  src='http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                  type='video/mp4'
-                />
-                Your browser does not support HTML5 video.
-              </video>
+              {type == 'video' ? (
+                <video width='100%' height='80%' controls>
+                  <source
+                    src='http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+                    type='video/mp4'
+                  />
+                  Your browser does not support HTML5 video.
+                </video>
+              ) : (
+                <audio controls>
+                  <source src={data.url} type='audio/ogg' />
+                  <source src={data.url} type='audio/mpeg' />
+                  Your browser does not support the audio tag.
+                </audio>
+              )}
               <div
                 style={{
                   color: 'white',
